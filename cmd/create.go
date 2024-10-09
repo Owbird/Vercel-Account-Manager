@@ -6,8 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/muesli/go-app-paths"
-
+	"github.com/owbird/vercel-account-manager/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -34,20 +33,6 @@ var createCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		vercelScope := gap.NewScope(gap.User, "com.vercel.cli")
-		vercelDirs, err := vercelScope.DataDirs()
-		if err != nil {
-			log.Fatalln(err)
-		}
-		vercelDir := vercelDirs[0]
-
-		vamScope := gap.NewScope(gap.User, "vam")
-		vamDirs, err := vamScope.DataDirs()
-		if err != nil {
-			log.Fatalln(err)
-		}
-		vamDir := vamDirs[0]
-
 		vCmd := exec.Command("vercel", "login", args[0])
 
 		vCmd.Stdout = os.Stdout
@@ -56,12 +41,13 @@ var createCmd = &cobra.Command{
 		vCmd.Run()
 		vCmd.Wait()
 
-		authPath := filepath.Join(vercelDir, "auth.json")
-		configPath := filepath.Join(vercelDir, "config.json")
+		vamDir := utils.GetVamDir()
 
 		accountDir := filepath.Join(vamDir, args[0])
 
 		os.MkdirAll(accountDir, os.ModePerm)
+
+		authPath, configPath := utils.GetVercelDir()
 
 		copyFile(configPath, filepath.Join(accountDir, "config.json"))
 		copyFile(authPath, filepath.Join(accountDir, "auth.json"))
