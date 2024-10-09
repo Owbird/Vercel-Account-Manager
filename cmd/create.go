@@ -14,14 +14,33 @@ import (
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Add a new account",
-	Long:  `Add an existing vercel account to the containers and can be checkout later`,
+	Long:  `You may also provide your email address, or Team slug (for SAML Single Sign-On), as an argument.
+When no arguments are provided, one of the flags are expected to be set.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
+		parsedArgs := []string{"login"}
+
+		if len(args) == 1 {
+			parsedArgs = append(parsedArgs, args[0])
+		}
+
+		if isGithub, err := cmd.Flags().GetBool("github"); err == nil && isGithub {
+			parsedArgs = append(parsedArgs, "--github")
+		}
+
+		if isGitlab, err := cmd.Flags().GetBool("gitlab"); err == nil && isGitlab {
+			parsedArgs = append(parsedArgs, "--gitlab")
+		}
+
+		if isBitbucket, err := cmd.Flags().GetBool("bitbucket"); err == nil && isBitbucket {
+			parsedArgs = append(parsedArgs, "--bitbucket")
+		}
+
+		if len(parsedArgs) == 1 {
 			cmd.Help()
 			os.Exit(0)
 		}
 
-		vCmd := exec.Command("vercel", "login", args[0])
+		vCmd := exec.Command("vercel", parsedArgs...)
 
 		vCmd.Stdout = os.Stdout
 		vCmd.Stderr = os.Stderr
@@ -29,9 +48,16 @@ var createCmd = &cobra.Command{
 		vCmd.Run()
 		vCmd.Wait()
 
+		vWhoAmI, err := exec.Command("vercel", "whoami").Output()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		currentUser := string(vWhoAmI)
+
 		vamDir := utils.GetVamDir()
 
-		accountDir := filepath.Join(vamDir, args[0])
+		accountDir := filepath.Join(vamDir, currentUser)
 
 		os.MkdirAll(accountDir, os.ModePerm)
 
@@ -40,7 +66,7 @@ var createCmd = &cobra.Command{
 		utils.CopyFile(configPath, filepath.Join(accountDir, "config.json"))
 		utils.CopyFile(authPath, filepath.Join(accountDir, "auth.json"))
 
-		log.Printf("[+] Account %s added", args[0])
+		log.Printf("[+] Account %s added", currentUser)
 	},
 }
 
@@ -55,5 +81,7 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	createCmd.Flags().Bool("github", false, "Using the vercel login command with the --github option.")
+	createCmd.Flags().Bool("gitlab", false, "Using the vercel login command with the --gitlab option.")
+	createCmd.Flags().Bool("bitbucket", false, "Using the vercel login command with the --bitbucket option.")
 }
