@@ -10,18 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func copyFile(src string, dst string) {
-	data, err := os.ReadFile(src)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.WriteFile(dst, data, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
@@ -49,8 +37,8 @@ var createCmd = &cobra.Command{
 
 		authPath, configPath := utils.GetVercelDir()
 
-		copyFile(configPath, filepath.Join(accountDir, "config.json"))
-		copyFile(authPath, filepath.Join(accountDir, "auth.json"))
+		utils.CopyFile(configPath, filepath.Join(accountDir, "config.json"))
+		utils.CopyFile(authPath, filepath.Join(accountDir, "auth.json"))
 
 		log.Printf("[+] Account %s added", args[0])
 	},

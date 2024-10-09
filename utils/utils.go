@@ -2,10 +2,23 @@ package utils
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/muesli/go-app-paths"
 )
+
+func CopyFile(src string, dst string) {
+	data, err := os.ReadFile(src)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.WriteFile(dst, data, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func GetVamDir() string {
 	vamScope := gap.NewScope(gap.User, "vam")
