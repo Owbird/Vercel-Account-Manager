@@ -14,7 +14,7 @@ import (
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Add a new account",
-	Long:  `You may also provide your email address, or Team slug (for SAML Single Sign-On), as an argument.
+	Long: `You may also provide your email address, or Team slug (for SAML Single Sign-On), as an argument.
 When no arguments are provided, one of the flags are expected to be set.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		parsedArgs := []string{"login"}
@@ -73,14 +73,6 @@ When no arguments are provided, one of the flags are expected to be set.`,
 func init() {
 	rootCmd.AddCommand(createCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	createCmd.Flags().Bool("github", false, "Using the vercel login command with the --github option.")
 	createCmd.Flags().Bool("gitlab", false, "Using the vercel login command with the --gitlab option.")
 	createCmd.Flags().Bool("bitbucket", false, "Using the vercel login command with the --bitbucket option.")
