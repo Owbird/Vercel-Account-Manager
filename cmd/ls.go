@@ -19,16 +19,12 @@ var lsCmd = &cobra.Command{
 		vamDir := utils.GetVamDir()
 
 		dirs, err := os.ReadDir(vamDir)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		utils.HandleFatalError(err)
 
 		currentAuth, _ := utils.GetVercelDir()
 
 		data, err := os.ReadFile(currentAuth)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		utils.HandleFatalError(err)
 
 		var currentConfig map[string]string
 
@@ -42,9 +38,7 @@ var lsCmd = &cobra.Command{
 			authPath := filepath.Join(vamDir, account, "auth.json")
 
 			data, err := os.ReadFile(authPath)
-			if err != nil {
-				log.Fatalln(err)
-			}
+			utils.HandleFatalError(err)
 
 			var authConfig map[string]string
 

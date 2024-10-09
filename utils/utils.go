@@ -8,6 +8,12 @@ import (
 	"github.com/muesli/go-app-paths"
 )
 
+func HandleFatalError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func CopyFile(src string, dst string) {
 	data, err := os.ReadFile(src)
 	if err != nil {

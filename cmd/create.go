@@ -49,9 +49,7 @@ When no arguments are provided, one of the flags are expected to be set.`,
 		vCmd.Wait()
 
 		vWhoAmI, err := exec.Command("vercel", "whoami").Output()
-		if err != nil {
-			log.Fatalln(err)
-		}
+		utils.HandleFatalError(err)
 
 		currentUser := string(vWhoAmI)
 

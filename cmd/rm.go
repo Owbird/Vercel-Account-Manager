@@ -25,9 +25,7 @@ var rmCmd = &cobra.Command{
 		vamDir := utils.GetVamDir()
 
 		dirs, err := os.ReadDir(vamDir)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		utils.HandleFatalError(err)
 
 		for _, dir := range dirs {
 			log.Println(dir.Name())
@@ -35,9 +33,7 @@ var rmCmd = &cobra.Command{
 				accountPath := filepath.Join(vamDir, account)
 
 				err := os.RemoveAll(accountPath)
-				if err != nil {
-					log.Fatalln(err)
-				}
+				utils.HandleFatalError(err)
 
 				log.Println("[+] Successfully removed account")
 
