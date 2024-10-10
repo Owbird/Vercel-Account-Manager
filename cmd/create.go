@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/owbird/vercel-account-manager/utils"
 	"github.com/spf13/cobra"
@@ -51,7 +52,7 @@ When no arguments are provided, one of the flags are expected to be set.`,
 		vWhoAmI, err := exec.Command("vercel", "whoami").Output()
 		utils.HandleFatalError(err)
 
-		currentUser := string(vWhoAmI)
+		currentUser := strings.ReplaceAll(string(vWhoAmI), "\n", "")
 
 		vamDir := utils.GetVamDir()
 
