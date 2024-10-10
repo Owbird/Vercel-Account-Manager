@@ -28,7 +28,6 @@ var rmCmd = &cobra.Command{
 		utils.HandleFatalError(err)
 
 		for _, dir := range dirs {
-			log.Println(dir.Name())
 			if account == dir.Name() {
 				accountPath := filepath.Join(vamDir, account)
 
